@@ -1,73 +1,84 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Backend Conexa Test - StarWars API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+URL de Despliegue: https://conexa-test-production.up.railway.app/docs#/
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Descripción del Proyecto
 
-## Description
+El objetivo de este proyecto es construir un backend que tome información de la API pública de Star Wars y que sea utilizada en pos de crear una nueva aplicación de gestión de películas y series. El backend está desarrollado en Nest.js.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Requisitos
 
-## Installation
+- Node.js
+- PostgreSQL
+- Nest.Js
+- Typescript
 
-```bash
-$ npm install
-```
+## Instalación
 
-## Running the app
+1. Clona el repositorio:
 
-```bash
-# development
-$ npm run start
+   ```bash
+   git clone https://github.com/Eliaslamas97/conexa-test.git
+   cd tuproyecto
+   ```
+2. Instala las dependencias:
 
-# watch mode
-$ npm run start:dev
+   ```bash
+    npm install
+   ```
 
-# production mode
-$ npm run start:prod
-```
+3. Configura la base de datos:
+    - Copia el archivo .env.example a .env y completa la configuración de la base de datos.
 
-## Test
+## Uso Local
 
-```bash
-# unit tests
-$ npm run test
+1. Configuracion del Servidor
 
-# e2e tests
-$ npm run test:e2e
+    - Asegúrate de que la base de datos esté configurada y ejecutándose.
+    - Asegúrate de que la configuración en el archivo .env sea correcta.
 
-# test coverage
-$ npm run test:cov
-```
+2. Ejecución
 
-## Support
+   ```bash
+    npm run start:dev
+   ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+3. Ejecución de pruebas
 
-## Stay in touch
+   ```bash
+    npm test
+   ```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Endpoints
 
-## License
+1. Endpoints de Autenticación
+    - `POST /auth/register`: Registro de usuario.
+    - `POST /auth/sign-in`: Inicio de sesión.
 
-Nest is [MIT licensed](LICENSE).
+2. Endpoints 
+    - USER
+       - `PATCH /user/modify-role`: Modificar role del usuario. 
+         - roles existentes: `[
+           {
+           "id": 0,
+           "name": "user"
+           },
+           {
+           "id": 1,
+           "name": "admin"
+           }
+           ]`
+   - ROLE
+     - `GET /role`: Listado de roles.*
+   
+    - MOVIE
+      - `GET /movie`: Listado de peliculas.*
+      - `GET /movie/:id`: Detalle de una pelicula.*
+      - `POST /movie`: Crear una pelicula.*
+      - `PATCH /movie/:id`: Modificar una pelicula.*
+      - `DELETE /movie/:id`: Eliminar una pelicula.*
+
+3. Schedule: En el módulo de `movie` existe un cronjob que se ejecuta todos los días a las 2am para sincronizar películas de la API con la base de datos.
+
+ *Nota: incluir en headers:
+      `Authorization: Bearer valid-token`
