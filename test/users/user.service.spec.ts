@@ -127,7 +127,7 @@ describe('UserService', () => {
     it('should update the user role if role exists', async () => {
       const userId = 'mock-uuid';
       const roleId = 1;
-      const existingRole = { id: roleId, name: 'admin' }; // Simulando un rol existente
+      const existingRole = { id: roleId, name: 'admin' };
       const updatedUser: IUser = {
         id: userId,
         name: 'John Doe',

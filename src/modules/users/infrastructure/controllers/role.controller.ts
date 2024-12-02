@@ -29,7 +29,6 @@ export class RoleController {
   @ApiExcludeEndpoint()
   @ApiOperation({ summary: 'Create a new role' })
   async createRole(@Param('name') name: string) {
-    console.log('name', name);
     return await this.roleService.create(name);
   }
 }
