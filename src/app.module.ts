@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from '@src/modules/users/user.module';
 import { AuthModule } from '@src/modules/auth/auth.module';
 import { MovieModule } from '@src/modules/movies/movie.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MovieModule } from '@src/modules/movies/movie.module';
     AuthModule,
     UserModule,
     MovieModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

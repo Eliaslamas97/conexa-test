@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('movies')
 export class MovieEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

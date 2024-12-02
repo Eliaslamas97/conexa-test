@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from '@src/modules/users/application/services/user.service';
@@ -9,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { RegisterDto } from '@src/modules/auth/domain/dtos/register.dto';
 import { SignInDto } from '@src/modules/auth/domain/dtos/sign-in.dto';
 import { AuthResponse } from '@src/modules/auth/domain/interfaces/auth-response.interface';
+import { jwtConstants } from '@src/modules/auth/domain/constants/jwt.constant';
 
 @Injectable()
 export class AuthService {
@@ -18,29 +20,45 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
-    const existingUser = await this.userService.findByEmail(registerDto?.email);
+    try {
+      const existingUser = await this.userService.findByEmail(
+        registerDto?.email,
+      );
 
-    if (existingUser) {
-      throw new BadRequestException('Email already exists');
+      if (existingUser) {
+        throw new BadRequestException('Email already exists');
+      }
+
+      registerDto.password = await bcrypt.hash(registerDto?.password, 10);
+      await this.userService.create(registerDto);
+
+      return { message: 'User created successfully' };
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
     }
-
-    registerDto.password = await bcrypt.hash(registerDto?.password, 10);
-    await this.userService.create(registerDto);
-
-    return { message: 'User created successfully' };
   }
 
   async signIn(signInDto: SignInDto): Promise<AuthResponse> {
-    const user = await this.userService.findByEmail(signInDto?.email);
+    try {
+      const user = await this.userService.findByEmail(signInDto?.email);
 
-    if (!user || !(await bcrypt.compare(signInDto?.password, user.password))) {
-      throw new UnauthorizedException('Invalid credentials');
+      if (
+        !user ||
+        !(await bcrypt.compare(signInDto?.password, user.password))
+      ) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      const payload = { sub: user.id, username: user.email, role: user.roleId };
+
+      return {
+        access_token: await this.jwtService.signAsync(payload, {
+          expiresIn: jwtConstants.expiresIn,
+          privateKey: jwtConstants.secret,
+        }),
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
     }
-
-    const payload = { sub: user.id, username: user.email };
-
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
   }
 }

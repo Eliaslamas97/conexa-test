@@ -1,49 +1,58 @@
 import {
   IsArray,
-  IsNotEmpty,
-  IsNumber,
   IsOptional,
+  IsNumber,
   IsString,
   IsUrl,
   Length,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateMovieDto {
   @IsString()
-  @IsNotEmpty()
-  title: string;
+  @IsOptional()
+  @ApiProperty()
+  title?: string;
 
   @IsNumber()
-  @IsNotEmpty()
-  episodeId: number;
+  @IsOptional()
+  @ApiProperty()
+  episodeId?: number;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @Length(10, 1000)
-  openingCrawl: string;
+  @ApiProperty()
+  openingCrawl?: string;
 
   @IsArray()
   @IsOptional()
-  characters: string[];
+  @ApiProperty()
+  characters?: string[];
 
   @IsArray()
   @IsOptional()
-  planets: string[];
+  @ApiProperty()
+  planets?: string[];
 
   @IsArray()
   @IsOptional()
-  starships: string[];
+  @ApiProperty()
+  starships?: string[];
 
   @IsArray()
   @IsOptional()
-  vehicles: string[];
+  @ApiProperty()
+  vehicles?: string[];
 
   @IsArray()
   @IsOptional()
-  species: string[];
+  @ApiProperty()
+  species?: string[];
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @IsUrl({}, { each: true })
-  url: string;
+  @ApiProperty()
+  url?: string;
 }

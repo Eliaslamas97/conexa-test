@@ -6,4 +6,5 @@ export interface IMovieRepository {
   create(movie: IMovie): Promise<IMovie>;
   update(id: string, movie: IMovie): Promise<IMovie>;
   delete(id: string): Promise<boolean>;
+  findByTitle(title: string): Promise<IMovie>;
 }

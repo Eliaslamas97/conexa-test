@@ -1,4 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { IMovieRepository } from '@src/modules/movies/domain/repositories/movie.repository';
 import { MOVIE_REPOSITORY } from '@src/modules/movies/symbols';
 import { CreateMovieDto } from '@src/modules/movies/domain/dtos/create-movie.dto';
@@ -15,34 +19,57 @@ export class MovieService {
   ) {}
 
   async create(createMovieDto: CreateMovieDto): Promise<IMovie> {
-    const newMovie: IMovie = {
-      id: uuidv4(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...createMovieDto,
-    };
-    return await this.movieRepository.create(newMovie);
+    try {
+      const newMovie: IMovie = {
+        id: uuidv4(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ...createMovieDto,
+      };
+      return await this.movieRepository.create(newMovie);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   async list(): Promise<IMovie[]> {
-    return await this.movieRepository.list();
+    try {
+      return await this.movieRepository.list();
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   async findById(id: string): Promise<IMovie> {
-    return await this.movieRepository.findById(id);
+    try {
+      return await this.movieRepository.findById(id);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   async update(id: string, updateMovieDto: UpdateMovieDto): Promise<IMovie> {
-    const movie = await this.movieRepository.findById(id);
-    const updateData = pickBy(
-      { updatedAt: new Date(), ...updateMovieDto },
-      identity,
-    );
-    const movieUpdated = merge({}, movie, updateData);
-    return await this.movieRepository.update(id, movieUpdated);
+    try {
+      const movie = await this.movieRepository.findById(id);
+      if (!movie) {
+        throw new InternalServerErrorException('Movie not found');
+      }
+      const updateData = pickBy(
+        { updatedAt: new Date(), ...updateMovieDto },
+        identity,
+      );
+      const movieUpdated = merge({}, movie, updateData);
+      return await this.movieRepository.update(id, movieUpdated);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 
   async delete(id: string): Promise<boolean> {
-    return await this.movieRepository.delete(id);
+    try {
+      return await this.movieRepository.delete(id);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }

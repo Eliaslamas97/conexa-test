@@ -41,7 +41,7 @@ export class UserRepository implements IUserRepository {
       where: { id },
     });
 
-    set(user, 'role', role);
+    set(user, 'roleId', role);
     await this._userTable.save(user);
 
     return user;

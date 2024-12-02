@@ -1,10 +1,9 @@
 import { IMovieRepository } from '@src/modules/movies/domain/repositories/movie.repository';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MovieEntity } from '@src/modules/movies/domain/entities/typeorm/movie.entity';
 import { IMovie } from '@src/modules/movies/domain/interfaces/movie.interface';
-import { validate } from 'class-validator';
 
 @Injectable()
 export class MovieRepository implements IMovieRepository {
@@ -14,13 +13,7 @@ export class MovieRepository implements IMovieRepository {
   ) {}
 
   async create(movie: IMovie): Promise<IMovie> {
-    const movieEntity = this.movieTable.create(movie);
-    const errors = await validate(MovieEntity);
-    if (errors.length > 0) {
-      throw new BadRequestException(errors);
-    }
-    await this.movieTable.save(movieEntity);
-    return movieEntity;
+    return await this.movieTable.save(movie);
   }
 
   async update(id: string, movie: IMovie): Promise<IMovie> {
@@ -39,5 +32,9 @@ export class MovieRepository implements IMovieRepository {
 
   async list(): Promise<IMovie[]> {
     return await this.movieTable.find();
+  }
+
+  async findByTitle(title: string): Promise<IMovie> {
+    return await this.movieTable.findOne({ where: { title } });
   }
 }
